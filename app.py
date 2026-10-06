@@ -1,10 +1,16 @@
-
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify, request
 import mysql.connector
 
 app = Flask(__name__)
 
-# Rotas
+def conectar_banco():
+    return mysql.connector.connect(
+        host="host.docker.internal", 
+        user="root",
+        password="172909",
+        database="almoxarifado"
+    )
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -21,48 +27,54 @@ def cadastro():
 def estoque():
     return render_template("estoque.html")
 
-# Inicia o servidor
+
+############################## Rotas da API
+
+@app.route("/api", methods=["GET"])
+def api_info():
+    return jsonify({
+        "mensagem": "Bem-vindo à API do Almoxarifado!",
+        "status": "online",
+        "endpoints": {
+            "estoque": "/api/estoque (GET/POST)"
+        }
+    })
+
+@app.route("/api/estoque", methods=["GET"])
+def listar_estoque():
+    try:
+        conexao = conectar_banco()
+        cursor = conexao.cursor(dictionary=True) 
+        cursor.execute("SELECT * FROM produtos")
+        itens = cursor.fetchall()
+        cursor.close()
+        conexao.close()
+        return jsonify({"sucesso": True, "dados": itens}), 200
+    except Exception as e:
+        return jsonify({"sucesso": False, "erro": str(e)}), 500
+
+@app.route("/api/estoque", methods=["POST"])
+def adicionar_item_estoque():
+    dados = request.get_json()
+    nome = dados.get("nome")
+    quantidade = dados.get("quantidade")
+    preco = dados.get("preco")
+
+    if not nome or quantidade is None:
+        return jsonify({"sucesso": False, "erro": "Campos 'nome' e 'quantidade' são obrigatórios!"}), 400
+
+    try:
+        conexao = conectar_banco()
+        cursor = conexao.cursor()
+        sql = "INSERT INTO produtos (nome, quantidade, preco) VALUES (%s, %s, %s)"
+        valores = (nome, quantidade, preco)
+        cursor.execute(sql, valores)
+        conexao.commit()
+        cursor.close()
+        conexao.close()
+        return jsonify({"sucesso": True, "mensagem": "Item cadastrado com sucesso!"}), 201
+    except Exception as e:
+        return jsonify({"sucesso": False, "erro": str(e)}), 500
+
 if __name__ == "__main__":
-    app.run(debug=True)
-
-
-=======
-from flask import Flask, render_template
-import mysql.connector
-
-app = Flask(__name__)
-
-# Conexão com o MySQL
-conexao = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="172909",
-    database="almoxarifado"
-)
-
-cursor = conexao.cursor()
-
-if conexao.is_connected():
-    print("Conectado ao MySQL!")
-
-# Rotas
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-@app.route("/home")
-def home():
-    return render_template("home.html")
-
-@app.route("/cadastro")
-def cadastro():
-    return render_template("cadastro.html")
-
-@app.route("/estoque")
-def estoque():
-    return render_template("estoque.html")
-
-# Inicia o servidor
-if __name__ == "__main__":
-    app.run(debug=True)
-
+    app.run(host="0.0.0.0", port=5000, debug=True)

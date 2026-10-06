@@ -1,18 +1,11 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-}
 
 body{
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
     background-color: #1d2b68;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
 }
+
 
 .container{
     width: 90%;
@@ -21,6 +14,8 @@ body{
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(248, 247, 247, 0.2);
+    margin: 40px auto;
+
 }
 
 h1{
@@ -71,19 +66,12 @@ td{
     text-align: center;
 }
 
-body{
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #1d2b68;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
 .navbar{
     width: 100%;
     background-color: #333;
-    padding: 15px 0;
+    padding: 20px 0;
+    display: block;
 }
 
 .navbar ul{
