@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, jsonify, request
 import mysql.connector
 
@@ -5,10 +6,10 @@ app = Flask(__name__)
 
 def conectar_banco():
     return mysql.connector.connect(
-        host="host.docker.internal", 
-        user="root",
-        password="172909",
-        database="almoxarifado"
+        host=os.getenv("DB_HOST", "host.docker.internal"),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_NAME", "almoxarifado"),
     )
 
 @app.route("/")
