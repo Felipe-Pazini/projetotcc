@@ -2,7 +2,7 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir flask mysql-connector-python flask-cors
+RUN pip install --no-cache-dir flask mysql-connector-python flask-cors flask-bcrypt
 
 COPY . .
 
