@@ -2,12 +2,30 @@ services:
   api:
     build: .
     container_name: api_almoxarifado
-    restart: always
     ports:
       - "5000:5000"
     environment:
-      - FLASK_ENV=development
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: senha123
+      DB_NAME: almoxarifado
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8
+    container_name: mysql_almoxarifado
+    environment:
+      MYSQL_ROOT_PASSWORD: senha123
     volumes:
-      - .:/app
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - dados_mysql:/var/lib/mysql
+      - ./banco.sql:/docker-entrypoint-initdb.d/banco.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-psenha123"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  dados_mysql:

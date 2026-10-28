@@ -3,40 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOGIN SENAI</title>
+    <title>Login SENAI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
 </head>
 <body>
-        
-    <div class="login-card">
-        <h2>Login</h2>
-        
-        <form action="/login" method="POST">
-            <div class="form-group">
-                <label>E-mail</label>
-                <input type="email" name="email" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Senha</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-      <a href="{{ url_for('home') }}">
-     <button type="button" class="btn">Entrar</button>
-       </a>
-        </form>
-    </div>
-        
-    <img id="logosenai" src="{{ url_for('static', filename='logosenai.jpg') }}" alt="Rodapé SENAI">
 
-    <div class="login-container">
-    <div class="logo">
-        <img src="sua-logo.png" alt="Logo">
-    </div>
+    <main class="login-container">
 
-    <div id="form_container">
-        <!-- Seu formulário -->
-    </div>
-</div>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='logosenai.jpg') }}" alt="Logo SENAI">
+        </div>
+
+        <div class="login-card">
+            <h2>Login</h2>
+
+            <form id="form-login">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="seu@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" placeholder="Digite sua senha" required>
+                </div>
+
+                <p id="mensagem" class="erro" hidden></p>
+
+                <button type="submit" class="btn">Entrar</button>
+                   
+                <p class="sem-conta">
+                    Não tem conta?
+                    <a href="{{ url_for('cadastro') }}">Crie uma agora</a>
+                </p>
+            </form>
+        </div>
+
+    </main>
+
+    <script>
+        document.getElementById("form-login").addEventListener("submit", async (evento) => {
+            evento.preventDefault();   // impede a página de recarregar
+
+            const email = document.getElementById("email").value.trim();
+            const senha = document.getElementById("password").value;
+            const mensagem = document.getElementById("mensagem");
+
+            try {
+                const resposta = await fetch("/api/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: email, senha: senha })
+                });
+
+                const dados = await resposta.json();
+
+                if (dados.sucesso) {
+                    window.location.href = "/home";   // login certo
+                } else {
+                    mensagem.textContent = dados.erro;
+                    mensagem.hidden = false;
+                }
+            } catch (erro) {
+                mensagem.textContent = "Não foi possível conectar ao servidor.";
+                mensagem.hidden = false;
+            }
+        });
+    </script>
+
 </body>
 </html>

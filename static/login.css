@@ -6,12 +6,7 @@
 body {
     margin: 0;
     min-height: 100vh;
-    background-color: #1d2b68;
-    background-image: url("sua-imagem.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-
+    background-color: #32438b;
     font-family: Arial, sans-serif;
     color: white;
 
@@ -20,101 +15,113 @@ body {
     align-items: center;
 }
 
-/* Área principal */
+/* Logo + cartão lado a lado, centralizados */
 .login-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 30px;
+    gap: 50px;
 
     width: 90%;
-    max-width: 800px;
+    max-width: 900px;
 }
 
-/* Caixa de login */
-#form_container {
+.logo img {
+    width: 260px;
+    max-width: 100%;
+    height: auto;
+}
+
+/* Cartão de login */
+.login-card {
     width: 100%;
-    max-width: 350px;
-    padding: 30px;
+    max-width: 380px;
+    padding: 35px 30px;
 
     background-color: rgba(0, 0, 0, 0.55);
-    border-radius: 12px;
+    border-radius: 14px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
 }
 
-/* Título */
-#form_title {
+.login-card h2 {
     margin: 0 0 25px;
     text-align: center;
     font-size: 28px;
 }
 
 /* Campos */
-#input_container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.input-box {
+.form-group {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    margin-bottom: 18px;
 }
 
-.form-control {
-    width: 100%;
-    height: 40px;
-    padding: 10px;
+.form-group label {
+    font-size: 14px;
+}
 
-    border: 1px solid #ccc;
-    border-radius: 6px;
+.form-group input {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+
+    font-size: 16px;
+    color: #222;
+    background-color: white;
+
+    border: 2px solid transparent;
+    border-radius: 8px;
     outline: none;
 }
 
-.form-control:focus {
-    border-color: #8295ff;
+.form-group input:focus {
+    border-color: #f07845;
 }
 
-/* Botão */
-.btn-default {
+/* Botão grande e centralizado */
+.btn {
+    display: block;
     width: 100%;
-    margin-top: 20px;
-    padding: 12px;
+    height: 50px;
+    margin-top: 10px;
+
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background-color: #f07845;
 
     border: none;
-    border-radius: 6px;
-
-    background-color: #8295ff;
-    color: white;
-
-    font-size: 16px;
+    border-radius: 8px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.btn-default:hover {
-    background-color: #687de8;
-}
-
-/* Logo */
-.logo img {
-    width: 250px;
-    max-width: 100%;
-    height: auto;
+.btn:hover {
+    background-color: #d95d2b;
 }
 
 /* Celular */
-@media (max-width: 600px) {
+@media (max-width: 700px) {
+    body {
+        padding: 25px 0;
+    }
+
     .login-container {
         flex-direction: column;
-        gap: 20px;
+        gap: 25px;
     }
 
     .logo img {
-        width: 160px;
-    }
-
-    #form_container {
-        max-width: 350px;
+        width: 180px;
     }
 }
 
+.erro {
+    margin: 5px 0 10px;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    background-color: rgba(255, 80, 80, 0.25);
+    border-radius: 6px;
+}

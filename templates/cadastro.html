@@ -6,165 +6,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro</title>
 
-    <link rel="stylesheet" href="../static/style.css">
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
-    <nav class="navbar">
 
+    <nav class="navbar">
         <ul>
-            <li><a href="/home">Home</a></li>
-            <li><a href="/estoque">Movimentação</a></li>
+            <li><a href="{{ url_for('index') }}">Voltar para a tela inicial</a></li>
         </ul>
     </nav>
 
     <main id="form_container">
 
         <div id="form_header">
-            <h1 id="form_title">
-                Criar conta
-            </h1>
+            <h1 id="form_title">Criar conta</h1>
         </div>
 
-        <form action="">
+        <form id="form-cadastro">
 
             <div id="input_container">
 
                 <div class="input-box">
-                    <label for="name" class="form-label">
-                        Primeiro nome
-                    </label>
-
+                    <label for="name" class="form-label">Primeiro nome</label>
                     <div class="input-field">
-                        <input
-                            type="text"
-                            name="name"
-                            id="name"
-                            class="form-control"
-                            >
+                        <input type="text" id="name" class="form-control" required>
                     </div>
                 </div>
 
                 <div class="input-box">
-                    <label for="last_name" class="form-label">
-                        Sobrenome
-                    </label>
-
+                    <label for="last_name" class="form-label">Sobrenome</label>
                     <div class="input-field">
-                        <input
-                            type="text"
-                            name="last_name"
-                            id="last_name"
-                            class="form-control"
-                            >
+                        <input type="text" id="last_name" class="form-control" required>
                     </div>
                 </div>
 
                 <div class="input-box">
-                    <label for="birthdate" class="form-label">
-                        Nascimento
-                    </label>
-
+                    <label for="birthdate" class="form-label">Nascimento</label>
                     <div class="input-field">
-                        <input
-                            type="text"
-                            name="birthdate"
-                            id="birthdate"
-                            class="form-control">
+                        <input type="date" id="birthdate" class="form-control" required>
                     </div>
                 </div>
 
                 <div class="input-box">
-                    <label for="email" class="form-label">
-                        E-mail
-                    </label>
-
+                    <label for="email" class="form-label">E-mail</label>
                     <div class="input-field">
-                        <input
-                            type="email"
-                            name="email"
-                            id="email"
-                            class="form-control"
-                            >
+                        <input type="email" id="email" class="form-control" required>
                     </div>
                 </div>
 
                 <div class="input-box">
-                    <label for="password" class="form-label">
-                        Senha
-                    </label>
-
+                    <label for="password" class="form-label">Senha</label>
                     <div class="input-field">
-                        <input
-                            type="password"
-                            name="password"
-                            id="password"
-                            class="form-control"
-                           >
+                        <input type="password" id="password" class="form-control" minlength="6" required>
                     </div>
                 </div>
 
                 <div class="input-box">
-                    <label for="confirm_password" class="form-label">
-                        Confirmar senha
-                    </label>
-
+                    <label for="confirm_password" class="form-label">Confirmar senha</label>
                     <div class="input-field">
-                        <input
-                            type="password"
-                            name="confirm_password"
-                            id="confirm_password"
-                            class="form-control"
-                            >
+                        <input type="password" id="confirm_password" class="form-control" required>
                     </div>
                 </div>
 
                 <div class="radio-container">
-
                     <label class="form-label">Tipo de usuário</label>
 
                     <div id="gender_inputs">
-
                         <div class="radio-box">
-                            <input
-                                type="radio"
-                                name="gender"
-                                id="admin"
-                                value="admin">
-
-                            <label for="admin" class="form-label">
-                                Administrador
-                            </label>
+                            <input type="radio" name="tipo" id="admin" value="admin">
+                            <label for="admin" class="form-label">Administrador</label>
                         </div>
 
                         <div class="radio-box">
-                            <input
-                                type="radio"
-                                name="gender"
-                                id="user"
-                                value="user">
-
-                            <label for="user" class="form-label">
-                                Usuário
-                            </label>
+                            <input type="radio" name="tipo" id="user" value="user" checked>
+                            <label for="user" class="form-label">Usuário</label>
                         </div>
-
                     </div>
-
                 </div>
 
             </div>
 
-            <button type="submit" class="btn-default">
-                Cadastrar
-            </button>
+            <p id="mensagem" class="mensagem" hidden></p>
 
+            <button type="submit" class="btn-default">Cadastrar</button>
         </form>
 
     </main>
 
-    <script src="../static/script.js"></script>
+    <script>
+        document.getElementById("form-cadastro").addEventListener("submit", async (evento) => {
+            evento.preventDefault();   // impede a página de recarregar
+
+            const nome = document.getElementById("name").value.trim();
+            const sobrenome = document.getElementById("last_name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const senha = document.getElementById("password").value;
+            const confirmar = document.getElementById("confirm_password").value;
+            const mensagem = document.getElementById("mensagem");
+
+            function mostrar(texto, ok) {
+                mensagem.textContent = texto;
+                mensagem.className = ok ? "mensagem sucesso" : "mensagem erro";
+                mensagem.hidden = false;
+            }
+
+            if (senha !== confirmar) {
+                mostrar("As senhas não são iguais!", false);
+                return;
+            }
+
+            try {
+                const resposta = await fetch("/api/usuarios", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        nome: nome + " " + sobrenome,
+                        email: email,
+                        senha: senha
+                    })
+                });
+
+                const dados = await resposta.json();
+
+                if (dados.sucesso) {
+                    mostrar("Conta criada! Indo para o login...", true);
+                    setTimeout(() => { window.location.href = "/"; }, 1500);
+                } else {
+                    mostrar(dados.erro, false);
+                }
+            } catch (erro) {
+                mostrar("Não foi possível conectar ao servidor.", false);
+            }
+        });
+    </script>
 
 </body>
 
