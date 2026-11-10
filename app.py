@@ -8,7 +8,7 @@ bcrypt = Bcrypt(app)  # Inicializa o Bcrypt no Flask
 
 def conectar_banco():
     return mysql.connector.connect(
-        host=os.getenv("DB_HOST", "host.docker.internal"),
+        host=os.getenv("DB_HOST", "db"),
         user=os.getenv("DB_USER", "root"),
         password=os.getenv("DB_PASSWORD"),
         database=os.getenv("DB_NAME", "almoxarifado"),
